@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "config": {
+    "none": true,
+    "eating": true,
+    "drinking": true,
+    "blocking": true,
+    "bow": true
+  }
+}

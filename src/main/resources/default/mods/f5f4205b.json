@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "config": {
+    "msg": "gg",
+    "delay": 0.25
+  }
+}

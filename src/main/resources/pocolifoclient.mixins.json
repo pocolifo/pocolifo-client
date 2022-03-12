@@ -1,0 +1,31 @@
+{
+  "minVersion": "0.7.11",
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.pocolifo.pocolifoclient.mixins",
+  "client": [
+    "Accessor_Gui",
+    "Accessor_GuiMainMenu",
+    "Accessor_GuiScreen",
+
+    "Mixin_Misc_Minecraft",
+    "Mixin_Misc_ClientBrandRetriever",
+
+    "Mixin_Clean_RemoveRealms_GuiMainMenu",
+
+    "Mixin_Perf_FastWorldLoading_Minecraft",
+    "Mixin_Perf_OptimizedSettings_GameSettings",
+
+    "Mixin_Looks_RedesignedMenu_GuiMainMenu",
+    "Mixin_Looks_RoundedButtons_GuiButton",
+    "Mixin_Looks_SmoothScroll_GuiSlot",
+
+    "Mixin_Mods_OpenModSettings_GuiIngame",
+    "Mixin_Mods_RenderMods_GuiIngame",
+    "Mixin_Mods__Discord__WorldChange_MinecraftMixin",
+    "Mixin_Mods__OldAnimations__ChangeTransform_ItemRenderer",
+    "Mixin_Mods__AutoGG__InterceptChat_GuiNewChatMixin",
+    "Mixin_Mods__ItemPhysics__RenderItem__RenderEntityItem",
+
+    "Mixin_Fix_Log4J"
+  ]
+}

@@ -1,0 +1,13 @@
+CATEGORY
+Clean = clean up
+Looks = changes the look of something
+Misc = misc
+Mods = for mods
+Fix = fixes
+Perf = performance
+
+MIXIN FORMAT
+Mixin_<category>[__<mod name>_]_<description>_<target class>
+
+ACCESSOR FORMAT
+Accessor_<target class>

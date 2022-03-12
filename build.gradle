@@ -1,0 +1,561 @@
+import com.pocolifo.minecraftapi.request.template.VersionMetadataTemplate
+import com.pocolifo.pocolifoclient.installer.library.Installation
+import com.pocolifo.pocolifoclient.installer.library.InstallationOptions
+import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientInstallation
+import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientLauncherProfile
+import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersion
+import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersionTemplate
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import proguard.gradle.ProGuardTask
+
+import java.nio.file.Files
+import java.util.concurrent.ThreadLocalRandom
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven {
+            url 'http://192.168.86.52:8080'
+            allowInsecureProtocol(true)
+        }
+    }
+
+    dependencies {
+        // proguard version 7.2.0 does not print warnings
+        classpath 'com.guardsquare:proguard-gradle:7.1.0'
+        classpath 'com.pocolifo.pocolifoclient.installer:api:2.0.0'
+        classpath 'com.google.code.gson:gson:2.9.0'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.pocolifo.minecraftgradle' version '0.1-SNAPSHOT'
+}
+
+group 'com.pocolifo'
+version "alpha+1_b41@${Constants.config.minecraft.version}"
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url 'https://repo.spongepowered.org/maven/'
+    }
+
+    maven {
+        url 'https://libraries.minecraft.net'
+    }
+
+    maven {
+        url 'http://192.168.86.52:8080'
+        allowInsecureProtocol(true)
+    }
+
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+def isCI = true
+
+dependencies {
+    minecraft mojang.client(Constants.config.minecraft.version)
+
+    // this is for mappings, do not replace 1.8.9 with the config mc version
+    mappings formats.mcp('stable', '22', '1.8.9')
+
+    // pocolifo
+    modImplementation 'com.pocolifo:commons:1.2.0'
+    modImplementation 'com.pocolifo.pocolifoclient.installer:api:2.0.0'
+    modImplementation 'com.pocolifo:minecraft-api:1.2'
+
+    // mixin
+    modImplementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    modImplementation 'net.minecraft:launchwrapper:1.12'
+
+    // possible switch at some point
+    // implementation 'com.github.sp614x:LegacyLauncher:aff3a537ee'
+
+    // mods
+    modImplementation 'com.github.jagrosh:DiscordIPC:master-SNAPSHOT'
+
+    // util & convenience
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
+
+minecraftgradle {
+    id "Pocolifo Client ${Constants.config.minecraft.version}"
+    mainClass Constants.config.launchwrapper.launch.interceptor
+
+    customLaunchArguments.add('--tweakClass')
+    customLaunchArguments.add(Constants.config.launchwrapper.launch.tweaker)
+
+    prettyManifest false
+
+    deploymentVersion Constants.config.minecraft.version
+
+    if (isCI) {
+        deploymentUrl "${PocolifoClientInstallation.ROOT_URL}versions/${project.version}/binary.jar"
+        deploymentJar Constants.getProductionJarFile(jar).get().getAsFile()
+    }
+}
+
+jar {
+    manifest.attributes(
+            'TweakClass': Constants.config.launchwrapper.launch.tweaker,
+            'MixinConfigs': Constants.config.launchwrapper.mixin.config,
+            'TweakOrder': 0
+    )
+}
+
+publishToMavenLocal.dependsOn(generateVersionManifest)
+
+/*publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                name = 'Pocolifo Client'
+                description = 'The Pocolifo Minecraft Client'
+                artifactId = 'pocolifoclient'
+                version = project.version
+                artifact(Constants.getProductionJarFile(jar).get().getAsFile().getAbsolutePath())
+
+                licenses {
+                    license {
+                        name = 'Proprietary License'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'youngermax'
+                    }
+                }
+            }
+
+            // from components['java']
+        }
+    }
+
+    repositories {
+
+    }
+}*/
+
+task dummyTask {}
+
+class Constants {
+    static config = [
+            'launchwrapper': [
+                    'mixin': [
+                            'config': 'pocolifoclient.mixins.json',
+                            'package': 'com.pocolifo.pocolifoclient.mixins'
+                    ],
+                    'launch': [
+                            'package': 'com.pocolifo.pocolifoclient.launch',
+                            'interceptor': 'com.pocolifo.pocolifoclient.launch.LaunchArgumentInterceptor',
+                            'tweaker': 'com.pocolifo.pocolifoclient.launch.PocolifoClientTweaker'
+                    ]
+            ],
+            'tasks': [
+                    'group': 'pocolifoclient'
+            ],
+            'api': [
+                    'url': 'http://192.168.86.54:5000'
+            ],
+            'build': [
+                    'properties': [
+                            'canonical_name': 'com.pocolifo.pocolifoclient.launch.BuildProperties',
+                            'simple_name': 'BuildProperties'
+                    ],
+                    'obfuscators': [
+                            'dictionary': 'lI',
+                            'proguard': [
+                                    'output': 'proguard.jar',
+                                    'dictionaries': [
+                                            'methods': 'obfuscation/methods-dictionary.txt',
+                                            'classes': 'obfuscation/classes-dictionary.txt',
+                                            'packages': 'obfuscation/packages-dictionary.txt'
+                                    ]
+                            ],
+                            'skidfuscator': [
+                                    'jar': 'obfuscation/dev.skidfuscator.obfuscator-1.0-SNAPSHOT.jar',
+                                    'mainClass': 'dev.skidfuscator.obf.Bootstrapper',
+                                    'output': 'skidfuscator.jar'
+                            ]
+                    ]
+            ],
+            'minecraft': [
+                    'version': '1.8.9'
+            ]
+    ]
+
+    static List<String> randomStringsGenerated = new ArrayList<>()
+
+    static String getProductionJarName(Jar jar) {
+        return jar.archiveFileName.get()
+    }
+
+    static Provider<RegularFile> getProductionJarFile(Jar jar) {
+        return jar.destinationDirectory.file(getProductionJarName(jar))
+    }
+
+    static Map<String, String> getProguardObfClassMap(ProGuardTask obfuscateProguard) {
+        Map<String, String> map = new HashMap<>()
+
+        Files.readAllLines(obfuscateProguard.printMappingFile.toPath()).parallelStream()
+                .filter(s -> !s.startsWith(" ") && !s.startsWith("\t"))
+                .forEach(s -> map.putIfAbsent(s.split(" -> ")[0], s.split(" -> ")[1].replaceAll(":", "")))
+
+        return map
+    }
+
+    // todo [VERY RUDE WARNING] get random class name to mess reversers up
+    static String getRandomString(String dictionary, int length) {
+        String s = ""
+
+        for (int i = 0; length > i; i++) {
+            s += dictionary.charAt(ThreadLocalRandom.current().nextInt(0, dictionary.length()))
+        }
+
+        if (randomStringsGenerated.contains(s)) {
+            return getRandomString(dictionary, length)
+        } else {
+            randomStringsGenerated.add(s)
+        }
+
+        return s
+    }
+
+    static List<String> getRandomStrings(int strings, String dictionary, int length) {
+        List<String> s = new ArrayList<>()
+
+        for (int i = 0; strings > i; i++) {
+            s.add(getRandomString(dictionary, length))
+        }
+
+        return s
+    }
+}
+
+task generateProguardObfuscationDictionaries {
+    int stringCount = 250
+    int length = 24
+    String dictionary = Constants.config.build.obfuscators.dictionary
+
+    File methods = new File(Constants.config.build.obfuscators.proguard.dictionaries.methods)
+    File classes = new File(Constants.config.build.obfuscators.proguard.dictionaries.classes)
+    File packages = new File(Constants.config.build.obfuscators.proguard.dictionaries.packages)
+
+    methods.text = String.join(System.lineSeparator(), Constants.getRandomStrings(stringCount, dictionary, length))
+    classes.text = String.join(System.lineSeparator(), Constants.getRandomStrings(stringCount, dictionary, length))
+    packages.text = String.join(System.lineSeparator(), Constants.getRandomStrings(stringCount, dictionary, length))
+}
+
+task obfuscateProguardJar(type: ProGuardTask, dependsOn: [reobfuscate, generateProguardObfuscationDictionaries]) {
+    group Constants.config.tasks.group
+
+    def out = new File(dummyTask.temporaryDir, Constants.config.build.obfuscators.proguard.output)
+
+    doFirst {
+        delete out
+        delete jar.destinationDirectory.file('proguard.map')
+    }
+
+    injars reobfuscate.getOutputFile()
+    outjars out
+
+    libraryjars fileTree("${System.getProperty('java.home')}/lib")
+    libraryjars configurations.runtimeClasspath
+    libraryjars minecraftgradle.getPlugin().fileManager.getMinecraft(minecraftgradle.getMinecraftDependency())
+
+    printmapping jar.destinationDirectory.file('proguard.map')
+
+    keepattributes '*Annotation*' // keep things like @ModConfiguration
+    keepattributes 'Signature'
+
+//    keep "class ${Constants.config.launchwrapper.mixin.package}.** { *; }"
+    String mixinKeep = """class ${Constants.config.launchwrapper.mixin.package}.** {
+    @org.spongepowered.asm.mixin.Overwrite <methods>;
+    
+    @org.spongepowered.asm.mixin.Shadow <methods>;
+    @org.spongepowered.asm.mixin.Shadow <fields>;
+    
+    @org.spongepowered.asm.mixin.Final <methods>;
+    @org.spongepowered.asm.mixin.Final <fields>;
+    
+    @org.spongepowered.asm.mixin.gen.Accessor <methods>;
+    
+    @org.spongepowered.asm.mixin.gen.Invoker <methods>; 
+}"""
+
+    keepclassmembers mixinKeep
+    keepcode mixinKeep
+    keepclasseswithmembers mixinKeep
+
+//    keepcode "class ${Constants.config.launchwrapper.mixin.package}.** { *; }"
+
+    keep "class ${Constants.config.launchwrapper.launch.interceptor} { *; }"
+    // keepclassmembers "class ${Constants.config.launchwrapper.launch.interceptor} { *; }"
+    // keepcode "class ${Constants.config.launchwrapper.launch.interceptor} { *; }"
+
+    keep "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
+    // keepclassmembers "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
+    // keepcode "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
+
+    repackageclasses('')
+
+    obfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.methods
+    classobfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.classes
+    packageobfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.packages
+
+    dontoptimize()
+    dontshrink()
+    flattenpackagehierarchy()
+}
+
+task obfuscateProguardMixinConfig(dependsOn: [clean, obfuscateProguardJar]) {
+    group Constants.config.tasks.group
+
+    doLast {
+        File out = new File(dummyTask.temporaryDir, Constants.config.build.obfuscators.proguard.output)
+
+        FileTree tree = zipTree(out)
+        File config = tree.filter(f -> f.name == Constants.config.launchwrapper.mixin.config).singleFile
+        File cfg = file(config)
+
+        String contents = cfg.text
+        String newMixinPackage = ""
+
+        Map<String, String> oldNewNames = Constants.getProguardObfClassMap(obfuscateProguardJar)
+        Map<String, String> mixinNames = new HashMap<>()
+
+        for (entry in oldNewNames) {
+            if (entry.key.startsWith(Constants.config.launchwrapper.mixin.package)) {
+                if (newMixinPackage.isEmpty()) {
+                    if (entry.value.contains('\\.')) {
+                        newMixinPackage = entry.value.split("\\.")[0]
+                    } else {
+                        newMixinPackage = ''
+                    }
+                }
+
+                mixinNames.put(entry.key, entry.value)
+            }
+        }
+
+        def mixinConfig = new JsonSlurper().parse(cfg)
+        mixinConfig.package = newMixinPackage
+
+        int beforeSize = mixinConfig.client.size()
+
+        for (entry in mixinNames) {
+            mixinConfig.client.remove(entry.key.substring(entry.key.lastIndexOf('.') + 1))
+            mixinConfig.client.add(entry.value.substring(entry.value.lastIndexOf('.') + 1))
+        }
+
+        if (mixinConfig.client.size() != beforeSize) {
+            throw new IllegalStateException('the amount of mixins before and after config remapping is different!')
+        }
+
+        cfg.text = JsonOutput.toJson(mixinConfig)
+        File proguardFinal = new File(dummyTask.temporaryDir, 'final.jar')
+        delete proguardFinal
+
+        try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(proguardFinal))) {
+            tree.visit(new FileVisitor() {
+                @Override
+                void visitDir(FileVisitDetails fileVisitDetails) {
+
+                }
+
+                @Override
+                void visitFile(FileVisitDetails fileVisitDetails) {
+                    outputStream.putNextEntry(new ZipEntry(fileVisitDetails.path))
+                    outputStream.write(Files.readAllBytes(fileVisitDetails.file.toPath()))
+                    outputStream.closeEntry()
+                }
+            })
+        }
+
+        delete out
+
+        Files.move(proguardFinal.toPath(), out.toPath())
+    }
+}
+
+task obfuscateSkidfuscator(type: JavaExec, dependsOn: obfuscateProguardMixinConfig) {
+    group Constants.config.tasks.group
+
+    classpath file(Constants.config.build.obfuscators.skidfuscator.jar)
+    main Constants.config.build.obfuscators.skidfuscator.mainClass
+
+    args '--inputFile'
+    args new File(dummyTask.temporaryDir, Constants.config.build.obfuscators.proguard.output).getAbsolutePath()
+
+    args '--outputFile'
+    args new File(dummyTask.temporaryDir, Constants.config.build.obfuscators.skidfuscator.output).getAbsolutePath()
+
+    args '--obfuscate-names-for-injected-content'
+
+    args '--obfuscate-names-dictionary'
+    args Constants.config.build.obfuscators.dictionary
+
+    args '--obfuscate-names-length'
+    args '20'
+}
+
+task obfuscateAll(dependsOn: obfuscateSkidfuscator, type: Copy) {
+    group Constants.config.tasks.group
+
+    from {
+        new File(dummyTask.temporaryDir, Constants.config.build.obfuscators.skidfuscator.output)
+    }
+
+    into {
+        jar.destinationDirectory
+    }
+
+    rename {
+        Constants.getProductionJarName(jar)
+    }
+}
+
+generateVersionManifest.dependsOn(obfuscateAll)
+
+task copyVersionToLauncher(dependsOn: generateVersionManifest) {
+    group Constants.config.tasks.group
+
+    doLast {
+        def version = new PocolifoClientVersion(project.version as String)
+        def plcInstall = new PocolifoClientInstallation(version)
+        def install = new Installation(new InstallationOptions(plcInstall))
+
+        // copy the jar
+        copy {
+            from {
+                Constants.getProductionJarFile(jar)
+            }
+
+            into {
+                new File(install.fileManager.libraries, plcInstall.getLibrary().getPath()).getParentFile()
+            }
+
+            rename {
+                "${plcInstall.getLibrary().getName()}-${plcInstall.getLibrary().getVersion()}.${plcInstall.getLibrary().getExtension()}"
+            }
+        }
+
+        // copy launcher metadata
+        copy {
+            from {
+                jar.destinationDirectory.file("${minecraftgradle.getId()}.json")
+            }
+
+            into {
+                new File(install.fileManager.versions, minecraftgradle.id)
+            }
+        }
+
+        // install new profile
+        def template = new VersionMetadataTemplate()
+        template.id = minecraftgradle.id
+
+        PocolifoClientLauncherProfile launcherProfile = new PocolifoClientLauncherProfile(version, template)
+        launcherProfile.installProfile(install)
+        launcherProfile.selectProfile(install)
+    }
+}
+
+task generateVersionPublishFiles(dependsOn: generateVersionManifest) {
+    group Constants.config.tasks.group
+
+    doLast {
+        // PLC version json
+        // generate current version data
+        def plcVersion = new PocolifoClientVersion(project.version as String)
+        def version = new PocolifoClientVersionTemplate()
+
+        version.versioning = [
+                "id": plcVersion.id,
+                "channel": plcVersion.channel,
+                "revision": plcVersion.revision,
+                "compatibility": plcVersion.compatibility
+        ]
+
+        version.assets = [
+                "launcherMetadata": "versions/${plcVersion.id}/metadata.json",
+                "clientBinary": "versions/${plcVersion.id}/binary.jar"
+        ]
+
+        version.releaseTime = (long) (System.currentTimeMillis() / 1000)
+
+        // get released versions & add the new one
+        def versions = new LinkedList<>()
+
+        try {
+            versions.addAll(PocolifoClientVersionTemplate.getVersions())
+        } catch (FileNotFoundException ignored) {
+            // versions.json doesn't exist on the server
+            logger.lifecycle('[WARNING] versions.json does not exist on the server!! PROCEEDING ANYWAY.')
+        }
+
+        if (versions.parallelStream().anyMatch(v -> v.versioning.id == version.versioning.id)) {
+            throw new RuntimeException("version with id ${version.versioning.id} already exists")
+        }
+
+        versions.addFirst(version)
+        def plcVersionsJson = PocolifoClientVersionTemplate.GSON.toJson(versions)
+
+        new File(generateVersionPublishFiles.temporaryDir, 'versions.json').text = plcVersionsJson
+
+        def versionDir = new File(new File(generateVersionPublishFiles.temporaryDir, 'versions'), plcVersion.id)
+        versionDir.mkdirs()
+
+        Files.copy(jar.destinationDirectory.file("${minecraftgradle.getId()}.json").get().getAsFile().toPath(), new File(versionDir, 'metadata.json').toPath())
+        Files.copy(Constants.getProductionJarFile(jar).get().getAsFile().toPath(), new File(versionDir, 'binary.jar').toPath())
+    }
+}
+
+compileJava.doFirst {
+    def props = [
+            'VERSION': project.version.toString(),
+            'ID': minecraftgradle.getId(),
+            'NAME': 'Pocolifo Client'
+    ]
+
+    //// auto-generate class ////
+
+    String buildPropsBase = """/*
+ * This class is auto-generated. Everything you put in here will be automatically
+ * replaced the next time you compile.
+*/
+
+package ${Constants.config.build.properties.canonical_name.substring(0, Constants.config.build.properties.canonical_name.length() - Constants.config.build.properties.simple_name.length() - 1)};
+
+public final class ${Constants.config.build.properties.simple_name} {
+%s
+}"""
+
+    StringBuilder builder = new StringBuilder()
+
+    for (prop in props) {
+        builder.append('\tpublic static final String ')
+                .append(prop.getKey())
+                .append(' = "')
+                .append(prop.getValue())
+                .append('";')
+                .append(System.lineSeparator())
+    }
+
+    String buildProps = String.format(buildPropsBase, builder.toString())
+    def buildPropsFile = file("src/main/java/${Constants.config.build.properties.canonical_name.replaceAll('\\.', '/')}.java")
+    buildPropsFile.text = buildProps
+}

@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "config": {
+    "show_current_server": true,
+    "pretty_server_names": true,
+    "target_discord_build": "STABLE"
+  }
+}

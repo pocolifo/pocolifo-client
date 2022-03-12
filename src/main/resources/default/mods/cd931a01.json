@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "config": {
+    "tip_anonymously": false,
+    "tip_one_player": false,
+    "tip_player_name": "",
+    "tip_interval": 600.0
+  }
+}

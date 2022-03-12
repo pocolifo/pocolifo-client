@@ -1,0 +1,15 @@
+{
+  "data": {
+    "enabled": true,
+    "config": {
+      "display_unbreakable_text": true,
+      "unbreakable_text": "Unbreakable",
+      "armor_text_margin": 4.0,
+      "show_total_durability": true
+    }
+  },
+  "position": {
+    "x": 0.67049026,
+    "y": 0.88964367
+  }
+}

@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        maven {
+            url 'https://maven.services.pocolifo.com'
+        }
+
+        maven {
+            url 'https://maven.fabricmc.net'
+        }
+    }
+}
+
+
+rootProject.name = 'pocolifoclient'
+

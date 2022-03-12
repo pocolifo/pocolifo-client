@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "config": {
+    "fast_world_loading": true
+  }
+}
