@@ -81,7 +81,7 @@ public class InitializationThread extends Thread {
 
 				this.state = "Finishing things up...";
 
-				PocolifoClientLauncherProfile profile = new PocolifoClientLauncherProfile(plcLatestVersion, plc.getLauncherMetadata());
+				PocolifoClientLauncherProfile profile = new PocolifoClientLauncherProfile(plc.getLauncherMetadata());
 				profile.installProfile(installation);
 				profile.selectProfile(installation);
 
