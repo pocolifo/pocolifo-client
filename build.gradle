@@ -5,6 +5,7 @@ import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientI
 import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientLauncherProfile
 import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersion
 import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersionTemplate
+import com.pocolifo.pocolifoclient.installer.library.Hosts
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import proguard.gradle.ProGuardTask
@@ -17,12 +18,10 @@ import java.util.zip.ZipOutputStream
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
 
-//        maven {
-//            url 'http://192.168.86.52:8080'
-//            allowInsecureProtocol(true)
-//        }
+        maven {
+            url 'https://maven.services.pocolifo.com/releases'
+        }
     }
 
     dependencies {
@@ -53,11 +52,6 @@ repositories {
         url 'https://libraries.minecraft.net'
     }
 
-//    maven {
-//        url 'http://192.168.86.52:8080'
-//        allowInsecureProtocol(true)
-//    }
-
     maven {
         url 'https://maven.services.pocolifo.com/releases'
     }
@@ -65,10 +59,9 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
-
-    mavenLocal()
 }
 
+Hosts.pocolifoClientAPI = "https://maven.services.pocolifo.com/pocolifoclient/"
 def isCI = true
 
 dependencies {
@@ -109,7 +102,7 @@ minecraftgradle {
     deploymentVersion Constants.config.minecraft.version
 
     if (isCI) {
-        deploymentUrl "${PocolifoClientInstallation.ROOT_URL}versions/${project.version}/binary.jar"
+        deploymentUrl "${Hosts.pocolifoClientAPI}versions/${project.version}/binary.jar"
         deploymentJar Constants.getProductionJarFile(jar).get().getAsFile()
     }
 }
@@ -173,9 +166,6 @@ class Constants {
             ],
             'tasks': [
                     'group': 'pocolifoclient'
-            ],
-            'api': [
-                    'url': 'http://192.168.86.54:5000'
             ],
             'build': [
                     'properties': [
