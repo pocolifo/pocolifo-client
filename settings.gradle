@@ -15,8 +15,13 @@ pluginManagement {
             url 'https://gitlab.pocolifo.com/api/v4/projects/6/packages/maven'
 
             credentials(HttpHeaderCredentials) {
-                name = 'Private-Token'
-                value = gitLabPrivateToken
+                if (System.getenv("CI_JOB_TOKEN") == null) {
+                    name = 'Private-Token'
+                    value = gitLabPrivateToken
+                } else {
+                    name = 'Job-Token'
+                    value = System.getenv("CI_JOB_TOKEN")
+                }
             }
 
             authentication {
