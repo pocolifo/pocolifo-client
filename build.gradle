@@ -39,7 +39,7 @@ plugins {
 }
 
 group 'com.pocolifo'
-version "alpha+1_b41@${Constants.config.minecraft.version}"
+version "alpha+1_b42@${Constants.config.minecraft.version}"
 
 repositories {
     mavenCentral()
@@ -61,7 +61,7 @@ repositories {
     }
 }
 
-Hosts.pocolifoClientAPI = "https://maven.services.pocolifo.com/pocolifoclient/"
+Hosts.pocolifoClientAPI = "https://maven.services.pocolifo.com/pocolifoclient/v2/"
 def isCI = true
 
 dependencies {
@@ -307,7 +307,9 @@ task obfuscateProguardJar(type: ProGuardTask, dependsOn: [reobfuscate, generateP
     // keepclassmembers "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
     // keepcode "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
 
-    repackageclasses('')
+    // todo repackage everything to mixin package
+    //      equivalent of repackaging to root directory, equally obfuscated
+    repackageclasses(Constants.config.launchwrapper.mixin.package)
 
     obfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.methods
     classobfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.classes
