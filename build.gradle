@@ -17,11 +17,12 @@ import java.util.zip.ZipOutputStream
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
 
-        maven {
-            url 'http://192.168.86.52:8080'
-            allowInsecureProtocol(true)
-        }
+//        maven {
+//            url 'http://192.168.86.52:8080'
+//            allowInsecureProtocol(true)
+//        }
     }
 
     dependencies {
@@ -52,14 +53,20 @@ repositories {
         url 'https://libraries.minecraft.net'
     }
 
+//    maven {
+//        url 'http://192.168.86.52:8080'
+//        allowInsecureProtocol(true)
+//    }
+
     maven {
-        url 'http://192.168.86.52:8080'
-        allowInsecureProtocol(true)
+        url 'https://maven.services.pocolifo.com/releases'
     }
 
     maven {
         url 'https://jitpack.io'
     }
+
+    mavenLocal()
 }
 
 def isCI = true
