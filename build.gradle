@@ -339,10 +339,11 @@ task obfuscateProguardMixinConfig(dependsOn: [clean, obfuscateProguardJar]) {
         for (entry in oldNewNames) {
             if (entry.key.startsWith(Constants.config.launchwrapper.mixin.package)) {
                 if (newMixinPackage.isEmpty()) {
-                    if (entry.value.contains('\\.')) {
-                        newMixinPackage = entry.value.split("\\.")[0]
-                    } else {
-                        newMixinPackage = ''
+                    if (entry.value.contains('.')) {
+                        def obfSplit = entry.value.split("\\.")
+                        def obfClassName = obfSplit[obfSplit.length - 1]
+
+                        newMixinPackage = entry.value.replace(".${obfClassName}", '')
                     }
                 }
 
