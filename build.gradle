@@ -39,7 +39,7 @@ plugins {
 }
 
 group 'com.pocolifo'
-version "alpha+1_b42@${Constants.config.minecraft.version}"
+version "alpha+1_b43@${Constants.config.minecraft.version}"
 
 repositories {
     mavenCentral()
@@ -306,10 +306,11 @@ task obfuscateProguardJar(type: ProGuardTask, dependsOn: [reobfuscate, generateP
     keep "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
     // keepclassmembers "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
     // keepcode "class ${Constants.config.launchwrapper.launch.tweaker} { *; }"
+    keeppackagenames Constants.config.launchwrapper.mixin.package
 
     // todo repackage everything to mixin package
     //      equivalent of repackaging to root directory, equally obfuscated
-    repackageclasses(Constants.config.launchwrapper.mixin.package)
+    repackageclasses('')
 
     obfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.methods
     classobfuscationdictionary Constants.config.build.obfuscators.proguard.dictionaries.classes
