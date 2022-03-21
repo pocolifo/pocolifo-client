@@ -1,8 +1,5 @@
 package com.pocolifo.pocolifoclient;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.pocolifo.pocolifoclient.launch.BuildProperties;
 import com.pocolifo.pocolifoclient.mods.InstanceHolder;
 import com.pocolifo.pocolifoclient.mods.Mod;
@@ -24,12 +21,18 @@ import com.pocolifo.pocolifoclient.mods.mods.systemtime.SystemTimeMod;
 import com.pocolifo.pocolifoclient.mods.mods.togglesprint.ToggleSprintMod;
 import com.pocolifo.pocolifoclient.util.serverid.ServerIdentifier;
 import lombok.Getter;
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PocolifoClient {
+	public static final Logger LOGGER = LogManager.getLogger();
+
 	@Getter
 	private static PocolifoClient instance;
 
@@ -38,7 +41,7 @@ public class PocolifoClient {
 
 	public static void init() {
 		if (instance != null) throw new RuntimeException("already initialized");
-		System.out.printf("INFO: Running %s %s%n", BuildProperties.NAME, BuildProperties.VERSION);
+		LOGGER.info("Running {} {}", BuildProperties.NAME, BuildProperties.VERSION);
 
 		ServerIdentifier.init();
 

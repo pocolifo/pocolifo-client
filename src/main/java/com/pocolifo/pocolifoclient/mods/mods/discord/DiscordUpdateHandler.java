@@ -55,8 +55,6 @@ public class DiscordUpdateHandler {
 
 			b.setDetails(this.details);
 			b.setState(this.state);
-			b.setParty("oijf092jr092j90r", 1, 100);
-			b.setJoinSecret("qjk4wr09k240-9fk");
 
 			/* TODO: alpha2
 			if (this.currentParty != null) {

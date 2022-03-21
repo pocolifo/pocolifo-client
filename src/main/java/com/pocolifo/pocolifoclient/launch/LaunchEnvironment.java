@@ -1,5 +1,6 @@
 package com.pocolifo.pocolifoclient.launch;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -7,19 +8,16 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 @RequiredArgsConstructor
+@Data
 public class LaunchEnvironment {
-	private static LaunchEnvironment instance;
+	public static boolean optiFine;
+	public static boolean prodEnvironment;
+	public static File gameDirectory;
+	public static File assetsDirectory;
 
-	public final boolean optiFine;
-	public final boolean prodEnvironment;
-	public final File gameDirectory;
-	public final File assetsDirectory;
-
-	public static void discoverPreMixinStage(File gameDirectory, File assetsDirectory) {
-		boolean hasOptiFine = classExists("optifine.OptiFineTweaker");
-		boolean isInProd = !classExists("com.pocolifo.pocolifoclient.launch.IsInProduction");
-
-		instance = new LaunchEnvironment(hasOptiFine, isInProd, gameDirectory, assetsDirectory);
+	public static void discoverInjectionStage() {
+		optiFine = classExists("optifine.OptiFineTweaker");
+		prodEnvironment = !classExists("com.pocolifo.pocolifoclient.launch.IsInProduction");
 	}
 
 	private static boolean classExists(String cls) {
@@ -34,17 +32,13 @@ public class LaunchEnvironment {
 		}
 	}
 
-	public static LaunchEnvironment getInstance() {
-		return instance;
-	}
-
-	public void printOutEnvironment(PrintStream stream) {
-		for (Field field : this.getClass().getFields()) {
+	public static void printOutEnvironment(PrintStream stream) {
+		for (Field field : LaunchEnvironment.class.getFields()) {
 			field.setAccessible(true);
 			String val;
 
 			try {
-				val = field.get(this).toString();
+				val = field.get(LaunchEnvironment.class).toString();
 			} catch (IllegalAccessException e) {
 				val = "(missing)";
 			}

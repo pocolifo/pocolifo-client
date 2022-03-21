@@ -33,7 +33,7 @@ public class ModLoader {
 	public ModLoader() {
 		this.mods = new ArrayList<>();
 		this.renderableMods = new ArrayList<>();
-		this.modFolder = new File(LaunchEnvironment.getInstance().gameDirectory, "mods");
+		this.modFolder = new File(LaunchEnvironment.gameDirectory, "mods");
 		this.modFolder.mkdirs();
 	}
 
@@ -53,7 +53,7 @@ public class ModLoader {
 		File modSaveFile = this.getModSaveFile(mod);
 
 		try (InputStream stream = Objects.requireNonNull(this.getClass().getResourceAsStream("/default/mods/" + this.getModSaveFileName(mod)));
-			 Reader reader = modSaveFile.isFile() ? new FileReader(modSaveFile) : new InputStreamReader(stream)) {
+		 	Reader reader = modSaveFile.isFile() ? new FileReader(modSaveFile) : new InputStreamReader(stream)) {
 			JsonObject modSave = new JsonParser().parse(reader).getAsJsonObject();
 			mod.deserialize(modSave);
 		} catch (Exception e) {

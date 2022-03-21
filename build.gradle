@@ -38,8 +38,16 @@ plugins {
     id 'com.pocolifo.minecraftgradle' version '0.1-SNAPSHOT'
 }
 
+def isCI = System.getenv("CI_JOB_TOKEN") != null
+
 group 'com.pocolifo'
-version "alpha+1_b43@${Constants.config.minecraft.version}"
+
+if (isCI) {
+    version "${System.getenv("CI_COMMIT_BRANCH")}+${System.getenv("CI_COMMIT_SHORT_SHA")}@${Constants.config.minecraft.version}"
+} else {
+    version "local+dev@${Constants.config.minecraft.version}"
+}
+
 
 repositories {
     mavenCentral()
@@ -62,7 +70,6 @@ repositories {
 }
 
 Hosts.pocolifoClientAPI = "https://maven.services.pocolifo.com/pocolifoclient/v2/"
-def isCI = true
 
 dependencies {
     minecraft mojang.client(Constants.config.minecraft.version)

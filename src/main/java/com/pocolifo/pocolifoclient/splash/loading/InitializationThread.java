@@ -1,6 +1,7 @@
 package com.pocolifo.pocolifoclient.splash.loading;
 
 import com.pocolifo.pocolifoclient.PocolifoClient;
+import com.pocolifo.pocolifoclient.installer.library.Hosts;
 import com.pocolifo.pocolifoclient.installer.library.Installation;
 import com.pocolifo.pocolifoclient.installer.library.InstallationOptions;
 import com.pocolifo.pocolifoclient.installer.library.library.optifine.OptiFineInstallation;
@@ -23,6 +24,8 @@ public class InitializationThread extends Thread {
 
 	@Override
 	public void run() {
+		Hosts.pocolifoClientAPI = "https://maven.services.pocolifo.com/pocolifoclient/v2/";
+
 		try {
 			Thread.sleep(500L);
 
@@ -39,7 +42,7 @@ public class InitializationThread extends Thread {
 			PocolifoClientVersionTemplate latestVersion = PocolifoClientVersionTemplate.getLatestVersion(
 					currentVersioning.getChannel(),
 					currentVersioning.getCompatibility(),
-					LaunchEnvironment.getInstance().optiFine);
+					LaunchEnvironment.optiFine);
 
 			boolean sameChannel = latestVersion.getVersioning().getChannel().equals(currentVersioning.getChannel());
 			boolean sameCompatibility = latestVersion.getVersioning().getCompatibility().equals(currentVersioning.getCompatibility());
@@ -51,8 +54,6 @@ public class InitializationThread extends Thread {
 			if (!isUpdateAvailable) return;
 
 			try {
-
-
 				this.state = "An update is available! Preparing update...";
 
 				// give the user some time to actually acknowledge what's happening
@@ -63,7 +64,7 @@ public class InitializationThread extends Thread {
 				InstallationOptions options = new InstallationOptions(plc);
 
 				// automatically fetches latest OptiFine version if there is a new release
-				if (LaunchEnvironment.getInstance().optiFine) {
+				if (LaunchEnvironment.optiFine) {
 					String latestOptiFineVersion = OptiFineInstallation.getLatestOptiFineVersion(latestVersion.getVersioning().getCompatibility());
 
 					if (!latestOptiFineVersion.equals(OFConfig.OF_RELEASE)) {
@@ -101,11 +102,11 @@ public class InitializationThread extends Thread {
 
 				try {
 					Thread.sleep(2500L);
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
+				} catch (InterruptedException ignored) {}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			this.state = "There was an error while checking for updates.";
 
 			try {

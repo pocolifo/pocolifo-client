@@ -32,7 +32,8 @@ public class PocolifoClientTweaker implements ITweaker {
 			this.args.add(profile);
 		}
 
-		LaunchEnvironment.discoverPreMixinStage(gameDir, assetsDir);
+		LaunchEnvironment.gameDirectory = gameDir;
+		LaunchEnvironment.assetsDirectory = assetsDir;
 	}
 
 	@Override
@@ -42,11 +43,12 @@ public class PocolifoClientTweaker implements ITweaker {
 
 		MixinEnvironment environment = MixinEnvironment.getDefaultEnvironment();
 		environment.setSide(MixinEnvironment.Side.CLIENT);
+		LaunchEnvironment.discoverInjectionStage();
 
-		if (LaunchEnvironment.getInstance().prodEnvironment) {
+		if (LaunchEnvironment.prodEnvironment) {
 			environment.setObfuscationContext("notch");
 		} else {
-			LaunchEnvironment.getInstance().printOutEnvironment(System.out);
+			LaunchEnvironment.printOutEnvironment(System.out);
 		}
 	}
 
@@ -57,6 +59,6 @@ public class PocolifoClientTweaker implements ITweaker {
 
 	@Override
 	public String[] getLaunchArguments() {
-		return LaunchEnvironment.getInstance().optiFine ? new String[0] : this.args.toArray(new String[0]);
+		return LaunchEnvironment.optiFine ? new String[0] : this.args.toArray(new String[0]);
 	}
 }
