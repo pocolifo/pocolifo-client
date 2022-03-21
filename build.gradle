@@ -98,7 +98,12 @@ dependencies {
 }
 
 minecraftgradle {
-    id "Pocolifo Client ${Constants.config.minecraft.version}"
+    if (isCI) {
+        id "Pocolifo Client ${Constants.config.minecraft.version} (${System.getenv("CI_COMMIT_BRANCH")})"
+    } else {
+        id "Pocolifo Client ${Constants.config.minecraft.version}"
+    }
+
     mainClass Constants.config.launchwrapper.launch.interceptor
 
     customLaunchArguments.add('--tweakClass')
