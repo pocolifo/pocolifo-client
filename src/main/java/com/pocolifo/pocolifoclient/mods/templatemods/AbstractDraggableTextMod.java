@@ -50,9 +50,9 @@ public abstract class AbstractDraggableTextMod extends AbstractBaseRenderableMod
 
 			this.textX = this.width / 2f - textWidth / 2f;
 			this.textY = this.height / 2f - textHeight / 2f;
-		}
 
-		this.lastText = text;
+			this.lastText = text;
+		}
 
 		Geometry.drawFullRoundedRectangle(this.getPosition().getRenderX(), this.getPosition().getRenderY(), this.width, this.height, this.backgroundRoundness, this.backgroundDetail, this.backgroundColor);
 		Fonts.sharp.write(text, this.getPosition().getRenderX() + this.textX, this.getPosition().getRenderY() + this.textY, this.textColor);

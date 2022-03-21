@@ -47,3 +47,4 @@ replay_pid*
 run
 
 obfuscation/*-dictionary.txt
+src/main/java/com/pocolifo/pocolifoclient/launch/BuildProperties.java
