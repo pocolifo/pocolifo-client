@@ -38,16 +38,19 @@ plugins {
     id 'com.pocolifo.minecraftgradle' version '0.1-SNAPSHOT'
 }
 
-def isCI = System.getenv("CI_JOB_TOKEN") != null
-
 group 'com.pocolifo'
+
+boolean isCI = System.getenv("CI_JOB_TOKEN") != null
+PocolifoClientVersion releaseVersion
 
 if (isCI) {
     if (System.getenv("CI_COMMIT_BRANCH") == null) {
-        version System.getenv("CI_COMMIT_TAG")
+        releaseVersion = new PocolifoClientVersion(System.getenv("CI_COMMIT_TAG"))
     } else {
-        version "${System.getenv("CI_COMMIT_BRANCH")}+${System.getenv("CI_COMMIT_SHORT_SHA")}@${Constants.config.minecraft.version}"
+        releaseVersion = new PocolifoClientVersion("${System.getenv("CI_COMMIT_BRANCH")}+${System.getenv("CI_COMMIT_SHORT_SHA")}@${Constants.config.minecraft.version}")
     }
+
+    version releaseVersion.toString()
 } else {
     version "local+dev@${Constants.config.minecraft.version}"
 }
@@ -102,8 +105,8 @@ dependencies {
 }
 
 minecraftgradle {
-    if (isCI) {
-        id "Pocolifo Client ${Constants.config.minecraft.version} (${System.getenv("CI_COMMIT_BRANCH")})"
+    if (releaseVersion != null) {
+        id "Pocolifo Client ${releaseVersion.compatibility} (${releaseVersion.channel})"
     } else {
         id "Pocolifo Client ${Constants.config.minecraft.version}"
     }
@@ -115,11 +118,12 @@ minecraftgradle {
 
     prettyManifest false
 
-    deploymentVersion "${System.getenv("CI_COMMIT_BRANCH")}-${Constants.config.minecraft.version}"
-
     if (isCI) {
-        deploymentUrl "${Hosts.pocolifoClientAPI}versions/${project.version}/binary.jar"
+        deploymentVersion "${releaseVersion.channel}-${releaseVersion.compatibility}"
+        deploymentUrl "${Hosts.pocolifoClientAPI}versions/${releaseVersion.toString()}/binary.jar"
         deploymentJar Constants.getProductionJarFile(jar).get().getAsFile()
+    } else {
+        deploymentVersion "local-${Constants.config.minecraft.version}"
     }
 }
 
