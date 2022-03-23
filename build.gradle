@@ -111,7 +111,7 @@ minecraftgradle {
 
     prettyManifest false
 
-    deploymentVersion Constants.config.minecraft.version
+    deploymentVersion "${System.getenv("CI_COMMIT_BRANCH")}-${System.getenv("CI_COMMIT_SHORT_SHA")}-${Constants.config.minecraft.version}"
 
     if (isCI) {
         deploymentUrl "${Hosts.pocolifoClientAPI}versions/${project.version}/binary.jar"
