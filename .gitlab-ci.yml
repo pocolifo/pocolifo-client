@@ -11,4 +11,4 @@ publish:
     - gradle generateVersionPublishFiles
     - ./upload.sh
   only:
-    - web
+    - tags
