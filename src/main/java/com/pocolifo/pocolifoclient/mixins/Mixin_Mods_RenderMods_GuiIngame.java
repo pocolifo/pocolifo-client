@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiIngame.class)
 public abstract class Mixin_Mods_RenderMods_GuiIngame {
-//	@Inject(method = "renderGameOverlay", at = @At("TAIL"))
-//	public void renderMods(float partialTicks, CallbackInfo ci) {
-//		for (RenderableMod renderableMod : PocolifoClient.getInstance().getModLoader().getRenderableMods()) {
-//			if (renderableMod.isEnabled()) renderableMod.render();
-//		}
-//	}
+	@Inject(method = "renderGameOverlay", at = @At("TAIL"))
+	public void renderMods(float partialTicks, CallbackInfo ci) {
+		for (RenderableMod renderableMod : PocolifoClient.getInstance().getModLoader().getRenderableMods()) {
+			if (renderableMod.isEnabled()) renderableMod.render();
+		}
+	}
 }
