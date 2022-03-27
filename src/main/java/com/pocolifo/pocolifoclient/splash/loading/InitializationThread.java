@@ -13,9 +13,7 @@ import com.pocolifo.pocolifoclient.launch.BuildProperties;
 import com.pocolifo.pocolifoclient.launch.LaunchEnvironment;
 import com.pocolifo.pocolifoclient.util.OFConfig;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.Display;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.Objects;
 
@@ -96,7 +94,7 @@ public class InitializationThread extends Thread {
 				this.state = "Closing game...";
 				Minecraft.getMinecraft().shutdown();
 			} catch (Exception e) {
-				e.printStackTrace();
+				PocolifoClient.LOGGER.error(e);
 
 				this.state = "There was an error while updating.";
 
@@ -105,7 +103,7 @@ public class InitializationThread extends Thread {
 				} catch (InterruptedException ignored) {}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			PocolifoClient.LOGGER.error(e);
 
 			this.state = "There was an error while checking for updates.";
 
