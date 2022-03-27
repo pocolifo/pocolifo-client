@@ -23,10 +23,11 @@ public class ScrollableContainerComponent extends ContainerComponent {
 
 	@Override
 	public void render() {
+		final double div = 10d;
 		int dWheel = Mouse.getDWheel();
 
 		if (this.isHovering()) {
-			scrollVel += dWheel / 10d;
+			scrollVel += dWheel / div;
 		}
 
 		scrollVel *= 0.7f;
