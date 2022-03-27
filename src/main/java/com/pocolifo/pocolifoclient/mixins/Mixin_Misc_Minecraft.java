@@ -1,5 +1,6 @@
 package com.pocolifo.pocolifoclient.mixins;
 
+import com.pocolifo.commons.OperatingSystemCommons;
 import com.pocolifo.pocolifoclient.PocolifoClient;
 import com.pocolifo.pocolifoclient.launch.BuildProperties;
 import com.pocolifo.pocolifoclient.splash.AbstractSplashScreen;
@@ -24,6 +25,20 @@ public abstract class Mixin_Misc_Minecraft {
 	@Shadow public int displayWidth;
 
 	@Shadow public int displayHeight;
+
+	@Inject(method = "startGame", at = @At("HEAD"))
+	public void updateTrustStore(CallbackInfo ci) {
+		// use the system trust store to our letsencrypt certificate will be trusted
+		// --> we need to do this because Mojang ships an old version of java that doesn't trust letsencrypt
+		// I KNOW YOU CAN REPLACE THIS WITH A SWITCH STATEMENT
+		OperatingSystemCommons.OperatingSystems os = OperatingSystemCommons.getHostOperatingSystem();
+
+		if (os == OperatingSystemCommons.OperatingSystems.WINDOWS) {
+			System.setProperty("javax.net.ssl.trustStoreType", "WINDOWS-ROOT");
+		} else if (os == OperatingSystemCommons.OperatingSystems.MACOS) {
+			System.setProperty("javax.net.ssl.trustStoreType", "KeychainStore");
+		}
+	}
 
 	@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;drawSplashScreen(Lnet/minecraft/client/renderer/texture/TextureManager;)V", shift = At.Shift.BEFORE))
 	public void loadFonts(CallbackInfo ci) {
