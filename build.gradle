@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         // proguard version 7.2.0 does not print warnings
         classpath 'com.guardsquare:proguard-gradle:7.1.0'
-        classpath 'com.pocolifo.pocolifoclient.installer:api:2.0.1'
+        classpath 'com.pocolifo.pocolifoclient.installer:api:2.0.2'
         classpath 'com.google.code.gson:gson:2.9.0'
     }
 }
@@ -86,7 +86,7 @@ dependencies {
 
     // pocolifo
     modImplementation 'com.pocolifo:commons:1.2.0'
-    modImplementation 'com.pocolifo.pocolifoclient.installer:api:2.0.1'
+    modImplementation 'com.pocolifo.pocolifoclient.installer:api:2.0.2'
     modImplementation 'com.pocolifo:minecraft-api:1.2'
 
     // mixin
@@ -119,11 +119,11 @@ minecraftgradle {
     prettyManifest false
 
     if (isCI) {
-        deploymentVersion "${releaseVersion.channel}-${releaseVersion.compatibility}"
+        deploymentVersion "${releaseVersion.channel}-${releaseVersion.revision}-${releaseVersion.compatibility}"
         deploymentUrl "${Hosts.pocolifoClientAPI}versions/${releaseVersion.toString()}/binary.jar"
         deploymentJar Constants.getProductionJarFile(jar).get().getAsFile()
     } else {
-        deploymentVersion "local-${Constants.config.minecraft.version}"
+        deploymentVersion "local-local-${Constants.config.minecraft.version}"
     }
 }
 
