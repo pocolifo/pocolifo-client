@@ -12,6 +12,24 @@ Source tree for PLC!
 
 `run/` Default working directory for the client.
 
+`src/` Source code
+
+`.gitignore` Git file that ignores files
+
+`.gitlab-ci.yml` Gitlab CI configuration
+
+`README.md` This file
+
+`build.gradle` & `settings.gradle` Gradle build configuration
+
+`gradle.properties.example` Template Gradle properties file that goes in `~/.gradle/`
+
+`gradlew` & `gradlew.bat` Gradle CLI wrapper shell scripts
+
+`upload.sh` CI uses this shell script to upload versions to the API
+
+`gradle/` Gradle wrapper directory
+
 ## Getting Started
 
 1. Clone this repository
