@@ -26,6 +26,7 @@
     "Mixin_Mods__AutoGG__InterceptChat_GuiNewChatMixin",
     "Mixin_Mods__ItemPhysics__RenderItem__RenderEntityItem",
 
-    "Mixin_Fix_Log4J"
+    "Mixin_Fix_Log4J",
+    "Mixin_Fix_ResourcePackVulnerability"
   ]
 }
