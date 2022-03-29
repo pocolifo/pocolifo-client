@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.opengl.Display;
 
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.ScaledResolution;
 public class ModPosition {
 	@Getter private float xPercent = 0f;
 	@Getter private float yPercent = 0f;
+	@Getter @Setter private float scale = 1f;
 
 	private int getWidth() {
 		return new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
@@ -54,6 +56,7 @@ public class ModPosition {
 
 		jsonObject.add("x", new JsonPrimitive(this.xPercent));
 		jsonObject.add("y", new JsonPrimitive(this.yPercent));
+		jsonObject.add("scale", new JsonPrimitive(this.scale));
 
 		return jsonObject;
 	}
@@ -61,7 +64,13 @@ public class ModPosition {
 	public void deserialize(JsonElement element) {
 		JsonObject jsonObject = element.getAsJsonObject();
 
-		this.xPercent = jsonObject.getAsJsonPrimitive("x").getAsFloat();
-		this.yPercent = jsonObject.getAsJsonPrimitive("y").getAsFloat();
+		if (jsonObject.has("x")) this.xPercent = jsonObject.getAsJsonPrimitive("x").getAsFloat();
+		if (jsonObject.has("y")) this.yPercent = jsonObject.getAsJsonPrimitive("y").getAsFloat();
+		if (jsonObject.has("scale")) this.scale = jsonObject.getAsJsonPrimitive("scale").getAsFloat();
+	}
+
+	public void changeScale(float scale) {
+		// make sure things don't get too small or big
+		if (this.scale + scale > 0.25f && 10f > this.scale + scale) this.scale += scale;
 	}
 }
