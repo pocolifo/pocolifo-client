@@ -23,7 +23,7 @@ public abstract class Mixin_Mods_RenderMods_GuiIngame {
 				GlStateManager.pushMatrix();
 				GlStateManager.scale(renderableMod.getPosition().getScale(), renderableMod.getPosition().getScale(), 1.0f);
 
-				double div = Math.pow(renderableMod.getPosition().getScale() - 1, -1) + 1; // magic
+				double div = (1 / (renderableMod.getPosition().getScale() - 1)) + 1; // magic
 				GlStateManager.translate(-renderableMod.getPosition().getRenderX() / div, -renderableMod.getPosition().getRenderY() / div, 0);
 
 				renderableMod.render();
