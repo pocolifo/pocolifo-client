@@ -18,6 +18,7 @@
     "Mixin_Looks_RedesignedMenu_GuiMainMenu",
     "Mixin_Looks_RoundedButtons_GuiButton",
     "Mixin_Looks_SmoothScroll_GuiSlot",
+    "Mixin_Looks_HideCrosshairWhileInMenu_GuiIngame",
 
     "Mixin_Mods_OpenModSettings_GuiIngame",
     "Mixin_Mods_RenderMods_GuiIngame",
