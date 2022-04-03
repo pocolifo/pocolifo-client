@@ -8,7 +8,9 @@ public enum Colors {
 	BLACK(new ClientColor(0, 0, 0)),
 
 	POCOLIFO_PURPLE(new ClientColor("#bb00ffff")),
-	POCOLIFO_BLUE(new ClientColor("#0099ffff"));
+	POCOLIFO_BLUE(new ClientColor("#0099ffff")),
+
+	BLACK_TRANSPARENT(new ClientColor(0, 0, 0, 0.4f));
 
 	public final ClientColor color;
 

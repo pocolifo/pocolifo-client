@@ -2,12 +2,16 @@ package com.pocolifo.pocolifoclient.mods.gui;
 
 import com.pocolifo.pocolifoclient.PocolifoClient;
 import com.pocolifo.pocolifoclient.mods.RenderableMod;
+import com.pocolifo.pocolifoclient.mods.gui.settings.GuiModSettings;
 import com.pocolifo.pocolifoclient.render.ClientColor;
 import com.pocolifo.pocolifoclient.render.Colors;
 import com.pocolifo.pocolifoclient.render.geometry.Geometry;
+import com.pocolifo.pocolifoclient.ui.impl.ButtonComponent;
 import com.pocolifo.pocolifoclient.util.Fonts;
 import com.pocolifo.pocolifoclient.util.Position;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 public class GuiModPositioning extends GuiScreen {
@@ -19,6 +23,8 @@ public class GuiModPositioning extends GuiScreen {
 
     private RenderableMod draggingMod;
     private float lastDistanceToCenter;
+
+    private ButtonComponent settingsButton;
 
     @Override
     public void drawScreen(int mx, int my, float partialTicks) {
@@ -108,6 +114,19 @@ public class GuiModPositioning extends GuiScreen {
 
         lastMx = mx;
         lastMy = my;
+
+        this.settingsButton.render();
+
+        if (this.settingsButton.isHovering()) {
+            this.settingsButton.setColor(Colors.BLACK_TRANSPARENT.color.coverBy(0.2f));
+        } else {
+            this.settingsButton.setColor(Colors.BLACK_TRANSPARENT.color);
+        }
+
+        if (this.settingsButton.isPressed()) {
+            this.mc.displayGuiScreen(new GuiModSettings());
+            this.mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+        }
     }
 
     private float getDistanceFromCenterOfNearestCorner(float mx, float my, RenderableMod mod) {
@@ -180,7 +199,10 @@ public class GuiModPositioning extends GuiScreen {
 
     @Override
     public void initGui() {
+        int settingsWidth = 150;
+        int settingsHeight = 30;
 
+        this.settingsButton = new ButtonComponent("Mod Settings", this.width / 2f - settingsWidth / 2f, this.height / 2f - settingsHeight / 2f, settingsWidth, settingsHeight, Colors.BLACK_TRANSPARENT.color, Colors.WHITE.color);
     }
 
     @Override
