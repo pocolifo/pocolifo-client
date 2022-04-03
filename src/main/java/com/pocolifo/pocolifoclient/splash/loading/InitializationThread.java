@@ -105,6 +105,9 @@ public class InitializationThread extends Thread {
 		} catch (Exception e) {
 			PocolifoClient.LOGGER.error(e);
 
+			// this is not always true, CI changes this
+			if (BuildProperties.VERSION.startsWith("local+dev")) return;
+
 			this.state = "There was an error while checking for updates.";
 
 			try {
