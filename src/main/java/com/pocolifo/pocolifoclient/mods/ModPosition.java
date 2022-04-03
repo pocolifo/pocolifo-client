@@ -3,6 +3,8 @@ package com.pocolifo.pocolifoclient.mods;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.pocolifo.pocolifoclient.render.Colors;
+import com.pocolifo.pocolifoclient.util.Fonts;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.opengl.Display;

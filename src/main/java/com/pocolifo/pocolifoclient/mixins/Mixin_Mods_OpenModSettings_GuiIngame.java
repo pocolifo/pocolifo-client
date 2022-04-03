@@ -1,7 +1,7 @@
 package com.pocolifo.pocolifoclient.mixins;
 
 import com.pocolifo.pocolifoclient.mods.ModLoader;
-import com.pocolifo.pocolifoclient.mods.gui.GuiMoveMods;
+import com.pocolifo.pocolifoclient.mods.gui.GuiModPositioning;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +19,7 @@ public class Mixin_Mods_OpenModSettings_GuiIngame {
 	@Inject(method = "renderGameOverlay", at = @At("TAIL"))
 	public void openModSettings(float partialTicks, CallbackInfo ci) {
 		if (ModLoader.openModMenu.isPressed()) {
-			this.mc.displayGuiScreen(new GuiMoveMods());
+			this.mc.displayGuiScreen(new GuiModPositioning());
 		}
 	}
 }

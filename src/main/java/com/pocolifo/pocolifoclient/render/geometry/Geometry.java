@@ -1,6 +1,7 @@
 package com.pocolifo.pocolifoclient.render.geometry;
 
 import com.pocolifo.pocolifoclient.render.ClientColor;
+import com.pocolifo.pocolifoclient.render.Colors;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -140,5 +141,20 @@ public class Geometry {
 //		GL11.glEnd();
 //		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 //		disable2D();
+	}
+
+	public static void point(float x, float y) {
+		drawFullRectangle(x - 1, y - 1, 3f, 3f, Colors.YELLOW.color);
+	}
+
+	public static void drawLine(float x1, float y1, float x2, float y2, float width, ClientColor color) {
+		GL11.glBegin(GL11.GL_LINES);
+
+		color.setCurrentColor();
+
+		GL11.glVertex2f(x1, y1);
+		GL11.glVertex2f(x2, y2);
+
+		GL11.glEnd();
 	}
 }
