@@ -102,6 +102,14 @@ public class ClientColor {
 		return new ClientColor(this.red - amount, this.green - amount, this.blue - amount, this.alpha);
 	}
 
+	public ClientColor coverBy(float amount) {
+		return new ClientColor(this.red, this.green, this.blue, this.alpha + amount);
+	}
+
+	public ClientColor clearBy(float amount) {
+		return new ClientColor(this.red, this.green, this.blue, this.alpha - amount);
+	}
+
 	public int getRGB() {
 		return new Color(this.red, this.green, this.blue, this.alpha).getRGB();
 	}
