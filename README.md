@@ -33,9 +33,27 @@ Source tree for PLC!
 ## Getting Started
 
 1. Clone this repository
-2. Import project into IntelliJ IDEA. It may fail because you have not authenticated with the GitLab package registry to download necessary Gradle plugins.
-3. Create the file `~/.gradle/gradle.properties` from `.gradle.properties.example` and replace `REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN` with a personal access token obtained from GitLab. The token needs to have `read_api` permissions.
+2. Import project into IntelliJ IDEA.
+3. Copy `.gradle.properties.example` to `~/.gradle/gradle.properties` and replace `REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN` with a personal access token obtained from GitLab. The token needs to have `read_api` permissions.
 4. Run the `runClient` Gradle task
+
+### How to get an access token
+
+1. Open preferences
+
+![Open preferences](./readme/prefs.png)
+
+2. Navigate to the access tokens section
+
+![Access tokens](./readme/access-tokens.png)
+
+3. Create a token
+
+![Create token](./readme/create-token.png)
+
+4. Copy the token and use it
+
+![Copy token](./readme/token-created.png)
 
 ## IMPORTANT
 ### For development
