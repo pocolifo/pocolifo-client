@@ -25,6 +25,7 @@ public class GuiModPositioning extends GuiScreen {
     private float lastDistanceToCenter;
 
     private ButtonComponent settingsButton;
+    private boolean scalingMod;
 
     @Override
     public void drawScreen(int mx, int my, float partialTicks) {
@@ -58,7 +59,7 @@ public class GuiModPositioning extends GuiScreen {
                         draggingMod = mod;
                     }
                 } else if (mod == draggingMod) {
-                    if (corner == null) {
+                    if (corner == null && !scalingMod) {
                         draggingMod.getPosition().moveX(changeX);
                         draggingMod.getPosition().moveY(changeY);
                     } else {
@@ -71,7 +72,7 @@ public class GuiModPositioning extends GuiScreen {
                                 draggingMod.getPosition().changeScale(scaleChange);
                             } else {
                                 // smaller
-                                draggingMod.getPosition().changeScale(-scaleChange);
+                                draggingMod.getPosition().changeScale(scaleChange * -1);
                             }
                         }
                     }
@@ -109,7 +110,7 @@ public class GuiModPositioning extends GuiScreen {
             // draw mod outline
             Geometry.drawFullRectangle(mod.getPosition().getRenderX(), mod.getPosition().getRenderY(), mod.getScaledWidth(), mod.getScaledHeight(), alphaColor);
             Geometry.drawLinedRectangle(mod.getPosition().getRenderX(), mod.getPosition().getRenderY(), mod.getScaledWidth(), mod.getScaledHeight(), 0.5f, color);
-            Fonts.regular.write(mod.getModName(), mod.getPosition().getRenderX(), mod.getPosition().getRenderY() + mod.getScaledHeight(), Colors.WHITE.color);
+            Fonts.sharp.write(mod.getModName(), mod.getPosition().getRenderX(), mod.getPosition().getRenderY() + mod.getScaledHeight(), Colors.WHITE.color);
         }
 
         lastMx = mx;
