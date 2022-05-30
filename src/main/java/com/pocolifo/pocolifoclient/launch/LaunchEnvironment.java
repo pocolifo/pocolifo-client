@@ -1,5 +1,7 @@
 package com.pocolifo.pocolifoclient.launch;
 
+import com.pocolifo.obfuscator.annotations.Pass;
+import com.pocolifo.obfuscator.annotations.PassOption;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -7,6 +9,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
+@Pass(value = "GarbageMembersPass", options = {
+		@PassOption(key = "addFields", value = "false")
+})
 @RequiredArgsConstructor
 @Data
 public class LaunchEnvironment {

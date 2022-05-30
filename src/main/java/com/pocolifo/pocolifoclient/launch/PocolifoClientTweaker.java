@@ -1,5 +1,7 @@
 package com.pocolifo.pocolifoclient.launch;
 
+import com.pocolifo.obfuscator.annotations.Pass;
+import com.pocolifo.obfuscator.annotations.PassOption;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -10,6 +12,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Pass(value = "RemapNamesPass", options = {
+		@PassOption(key = "remapClassNames", value = "false")
+})
 public class PocolifoClientTweaker implements ITweaker {
 	private final List<String> args = new ArrayList<>();
 
