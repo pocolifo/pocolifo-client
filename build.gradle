@@ -169,7 +169,7 @@ minecraftgradle {
     if (isCI) {
         deploymentVersion "${releaseVersion.channel}-${releaseVersion.revision}-${releaseVersion.compatibility}"
         deploymentUrl "${Hosts.pocolifoClientAPI}versions/${releaseVersion.toString()}/binary.jar"
-        deploymentJar obfuscate.outputFile
+        deploymentJar obfuscate.outputFile.get()
     } else {
         PocolifoClientVersion version = new PocolifoClientVersion(project.version as String)
         deploymentVersion "${version.channel}-${version.revision}-${minecraftVersion}"
