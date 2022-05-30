@@ -4,10 +4,6 @@ Source tree for PLC!
 
 ## Source tree
 
-`other/` Miscellaneous things that may be used in the future.
-
-`obfuscation/` JARs and dictionaries required to obfuscate the client. Will probably be replaced by a Gradle plugin at some point.
-
 `logo/` PLC logos.
 
 `run/` Default working directory for the client.
@@ -30,11 +26,13 @@ Source tree for PLC!
 
 `gradle/` Gradle wrapper directory
 
+`count-line-numbers.py` Tool to count the number of lines across the project
+
 ## Getting Started
 
-1. Clone this repository
-2. Import project into IntelliJ IDEA.
-3. Copy `.gradle.properties.example` to `~/.gradle/gradle.properties` and replace `REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN` with a personal access token obtained from GitLab. The token needs to have `read_api` permissions.
+1. Copy `gradle.properties.example` to `~/.gradle/gradle.properties` and replace `REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN` with a personal access token obtained from GitLab. The token needs to have `read_api` permissions.
+2. Clone this repository
+3. Import project into IntelliJ IDEA.
 4. Run the `runClient` Gradle task
 
 ### How to get an access token
@@ -56,18 +54,6 @@ Source tree for PLC!
 ![Copy token](./readme/token-created.png)
 
 ## IMPORTANT
-### For development
-
-Don't use the pipe operator in catch expressions. It messes up obfuscation. In these instances, just catch `Exception`
-or `Throwable`.
-```java
-try {
-    // code
-} catch (SomeException | AnotherException e) { 
-    // code
-}
-```
-
 ### Other
 YOU ARE NOT PERMITTED TO PUBLISH THE SOURCE CODE OF POCOLIFO CLIENT UNDER ANY CIRCUMSTANCES, UNLESS PROVIDED WITH EXPLICIT
 WRITTEN CONSENT BY LINCOLN MAXWELL!
