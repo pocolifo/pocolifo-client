@@ -9,7 +9,9 @@ import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientL
 import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersion
 import com.pocolifo.pocolifoclient.installer.library.library.plc.PocolifoClientVersionTemplate
 
+import java.nio.file.CopyOption
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 buildscript {
     repositories {
@@ -295,8 +297,8 @@ task generateVersionPublishFiles(dependsOn: generateVersionManifest) {
         def versionDir = new File(new File(generateVersionPublishFiles.temporaryDir, 'versions'), plcVersion.id)
         versionDir.mkdirs()
 
-        Files.copy(jar.destinationDirectory.file("${minecraftgradle.getId()}.json").get().getAsFile().toPath(), new File(versionDir, 'metadata.json').toPath())
-        Files.copy(obfuscate.outputFile, new File(versionDir, 'binary.jar').toPath())
+        Files.copy(jar.destinationDirectory.file("${minecraftgradle.getId()}.json").get().getAsFile().toPath(), new File(versionDir, 'metadata.json').toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(obfuscate.outputFile.get().toPath(), new File(versionDir, 'binary.jar').toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
 
