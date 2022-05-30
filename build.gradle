@@ -191,7 +191,7 @@ obfuscate {
 
 obfuscator {
     pass("GarbageMembersPass") {
-        addFields = true
+        addFields = false
         addMethods = false
     }
 
@@ -199,21 +199,8 @@ obfuscator {
         fakeZipDirectory = false
     }
 
-    pass("AntiDecompilePass") {
-        parentDirectorySourceFileNames = false
-    }
-
     pass("RemapNamesPass") {
-        remapClassNames = true
         obfuscatedStringSupplier = new TwoLetterObfuscatedStringSupplier((char) 'I', (char) 'l')
-    }
-
-    pass("BytecodeScrambler") {
-        enabled = false
-    }
-
-    pass("RemoveSourceHintsPass") {
-        enabled = false
     }
 }
 
