@@ -34,26 +34,3 @@ Source tree for PLC!
 2. Clone this repository
 3. Import project into IntelliJ IDEA.
 4. Run the `runClient` Gradle task
-
-### How to get an access token
-
-1. Open preferences
-
-![Open preferences](./readme/prefs.png)
-
-2. Navigate to the access tokens section
-
-![Access tokens](./readme/access-tokens.png)
-
-3. Create a token
-
-![Create token](./readme/create-token.png)
-
-4. Copy the token and use it
-
-![Copy token](./readme/token-created.png)
-
-## IMPORTANT
-### Other
-YOU ARE NOT PERMITTED TO PUBLISH THE SOURCE CODE OF POCOLIFO CLIENT UNDER ANY CIRCUMSTANCES, UNLESS PROVIDED WITH EXPLICIT
-WRITTEN CONSENT BY LINCOLN MAXWELL!
